@@ -343,7 +343,7 @@ $vd2 = "INSERT INTO `$db_name`.`modalidad` (`id`, `valor`, `nombre`) VALUES ('0'
 					
 $datein = date('Y-m-d/H:i:s');
 $logdate = date('Y_m_d');
-$logtext = "- CONFIG INIT ".$datein.".\n * ".$db_name.". \n * ".$db_host.". \n * ".$db_user.". \n * ".$db_pass."\n".$dbconecterror.$table1.$table2.$table3.$table4.$table5.$table6.$table7.$table8.$table9."\n";
+$logtext = "- CONFIG INIT ".$datein.".\n * ".$db_name.". \n * ".$db_host.". \n * ".$db_user.". \n * ".$db_pass."\n".$dbconecterror.$table1.$table3.$table4.$table5.$table6.$table7.$table8.$table9."\n";
 $filename = "config/".$logdate."_CONFIG_INIT.log";
 $log = fopen($filename, 'ab+');
 fwrite($log, $logtext);
@@ -353,7 +353,7 @@ fclose($log);
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-function show_form($errors=''){
+function show_form($errors=[]){
 	
 	/* Se pasan los valores por defecto y se devuelven los que ha escrito el usuario. */
 	
