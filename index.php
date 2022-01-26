@@ -2,7 +2,7 @@
 
 	require 'Inclu/Inclu_Menu_00c.php';
 	//require 'Inclu/Admin_0.php';
-	if($_POST['config']){
+	if(@$_POST['config']){
 							
 	if($form_errors = validate_form()){
 										show_form($form_errors);
@@ -357,7 +357,7 @@ function show_form($errors=[]){
 	
 	/* Se pasan los valores por defecto y se devuelven los que ha escrito el usuario. */
 	
-	if($_POST['config']){
+	if(@$_POST['config']){
 		$defaults = $_POST;
 		} else {
 				$defaults = array ( 'host' => '',
