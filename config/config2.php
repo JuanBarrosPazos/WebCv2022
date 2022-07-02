@@ -3,14 +3,14 @@ session_start();
 
 	require '../Inclu/Inclu_Menu_00c2.php';
 
-		require '../Conections/conection.php';
+	require '../Conections/conection.php';
 
 
 	$db = mysqli_connect($db_host,$db_user,$db_pass,$db_name);
 	if (!$db){ die ("Es imposible conectar con la bbdd ".$db_name."<br/>".mysqli_connect_error());
 				}
 
-	$sqld =  "SELECT * FROM `admin` WHERE `Email` = '$_POST[Email]' OR `Usuario` = '$_POST[Usuario]'";
+	@$sqld =  "SELECT * FROM `admin` WHERE `Email` = '$_POST[Email]' OR `Usuario` = '$_POST[Usuario]'";
  	
 	$qd = mysqli_query($db, $sqld);
 	
@@ -19,7 +19,7 @@ session_start();
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 
-						if($_POST['oculto']){
+						if(isset($_POST['oculto'])){
 							
 								if($form_errors = validate_form()){
 									show_form($form_errors);
@@ -42,7 +42,7 @@ function validate_form(){
 	
 		require '../Inclu/validate.php';	
 		
-			return $errors;
+		return $errors;
 
 		} 
 
@@ -204,19 +204,20 @@ copy("index_Play_System.php", "../index.php");
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-function show_form($errors=''){
+function show_form($errors=[]){
 	
-	if($_POST['oculto']){
+	if(@$_POST['oculto']){
 		$defaults = $_POST;
-		} else {
-					$defaults = array ( 'Nombre' => '',
+		} else {	$defaults = array ( 'Nombre' => '',
 										'Apellidos' => '',
 										'doc' => '',
 										'dni' => '',
 										'ldni' => '',
 										'Email' => 'Solo letras minúsculas',
 										'Usuario' => '',
+										'Usuario2' => '',
 										'Password' => '',
+										'Password2' => '',
 										'Direccion' => '',
 										'Tlf1' => '',
 										'Tlf2' => '');
@@ -232,7 +233,7 @@ function show_form($errors=''){
 					<td style='text-align:left'>");
 			
 		for($a=0; $c=count($errors), $a<$c; $a++){
-			print("<font color='#FF0000'>**</font>  ".$errors [$a]."<br/>");
+			print("<font color='#FF0000'>**</font>  ".$errors[$a]."<br/>");
 			}
 		print("</td>
 				</tr>
@@ -263,8 +264,7 @@ function show_form($errors=''){
 						'NIFepenr' => 'NIF Establecimientos Permanentes Entidades no Residentes',
 										);
 	
-	print("
-			<table style='text-align:left' align='center' style=\"margin-top:10px\">
+	print("<table style='text-align:left' align='center' style=\"margin-top:10px\">
 				<tr>
 					<th colspan=2 class='BorderInf' align='center'>
 
@@ -280,7 +280,7 @@ function show_form($errors=''){
 						Nombre:
 					</td>
 					<td width=360px>
-		<input type='text' name='Nombre' size=28 maxlength=25 value='".$defaults['Nombre']."' />
+		<input type='text' name='Nombre' size=28 maxlength=25 value='".@$defaults['Nombre']."' />
 					</td>
 				</tr>
 					

@@ -15,6 +15,7 @@
 <title>Juan Barros Pazos. Contactos</title>
 
 <link href="Descargas.css" rel="stylesheet" type="text/css" />
+
 <link href="favicon.ico" type='image/ico' rel='shortcut icon' />
 
 <script type="text/JavaScript">

@@ -1,5 +1,9 @@
 <?php
  
+		session_start();
+
+		//require 'Inclu/error_hidden.php';
+
 		require 'Conections/conection.php';
 
 	global $db;
@@ -19,31 +23,37 @@
 	$_SESSION['tmail'] = "Email: ".$rowt['Email']." / ";
 	$_SESSION['mmail'] = $rowt['Email'];
 	$_SESSION['ttlf'] = "Tlf: ".$rowt['Tlf1'].".";
-		require 'Inclu/Inclu_Menu_00.php';
+
+	require 'Inclu/Inclu_Menu_00.php';
 
 	$sql =  "SELECT * FROM `web_cv`";
 	$q = mysqli_query($db, $sql);
 	$row = mysqli_fetch_assoc($q);
-	
-	$_SESSION['id'] = $row['id'];
-	$_SESSION['year'] = $row['year'];
-	$_SESSION['horas'] = $row['horas'];
-	$_SESSION['sector'] = $row['sector'];
-	$_SESSION['titulo'] = $row['titulo'];
-	$_SESSION['modulos'] = $row['modulos'];
-	$_SESSION['academia'] = $row['academia'];
-	$_SESSION['coment'] = $row['coment'];
+
+	global $count;
+	$count = mysqli_num_rows($q);
+
+	if($count >=1){
+		$_SESSION['id'] = $row['id'];
+		$_SESSION['year'] = $row['year'];
+		$_SESSION['horas'] = $row['horas'];
+		$_SESSION['sector'] = $row['sector'];
+		$_SESSION['titulo'] = $row['titulo'];
+		$_SESSION['modulos'] = $row['modulos'];
+		$_SESSION['academia'] = $row['academia'];
+		$_SESSION['coment'] = $row['coment'];
+	} else { }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 		
 					//require 'Inclu/Admin_2.php';
-					if($_POST['oculto']){show_form();
+				if(isset($_POST['oculto'])){show_form();
 										 process_form();
 										 
 									} else {visit();	
 											show_form();
 											ver_todo();
-											admin();
 													}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,7 +70,7 @@ function visit(){
 	$qv = mysqli_query($db, $sqlv);
 	$rowv = mysqli_fetch_assoc($qv);
 	
-	$_SESSION['visita'] = $row['visita'];
+	$_SESSION['visita'] = $rowv['visita'];
 
 	$tot = $rowv['visita'];
 
@@ -93,7 +103,7 @@ function process_form(){
 	$sqlv =  "SELECT * FROM `visitas`";
 	$qv = mysqli_query($db, $sqlv);
 	$rowv = mysqli_fetch_assoc($qv);
-	$_SESSION['visita'] = $row['visita'];
+	$_SESSION['visita'] = $rowv['visita'];
 	$tot = $rowv['visita'];
 	
 	$fil = "%".$_POST['sector']."%";
@@ -247,15 +257,17 @@ $sqlc =  "SELECT * FROM `web_cv` WHERE `sector` LIKE '$fil' OR `sector2` LIKE '$
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-function show_form(){
+function show_form($errors=[]){
 	
-	if($_POST['oculto']){
+	global $filtrar;
+	global $ordenar;
+
+	if(isset($_POST['oculto'])){
 		$defaults = $_POST;
 		}
-	elseif($_POST['todo']){
+	elseif(isset($_POST['todo'])){
 		$defaults = $_POST;
-		} else {
-				$defaults = array ('sector' => $filtrar,
+		} else {$defaults = array ('sector' => $filtrar,
 								   'Orden' => $ordenar);
 								   						}
 	if ($errors){
@@ -396,10 +408,12 @@ function ver_todo(){
 	
 	$rowv = mysqli_fetch_assoc($qv);
 	
-	$_SESSION['visita'] = $row['visita'];
+	$_SESSION['visita'] = $rowv['visita'];
 	
 	$tot = $rowv['visita'];
-	$orden = $_POST['Orden'];
+	
+	global $orden;
+	$orden = @$_POST['Orden'];
 
 	$sqlb =  "SELECT * FROM `web_cv` ORDER BY `year` DESC";
 	$qb = mysqli_query($db, $sqlb);
@@ -518,169 +532,4 @@ function ver_todo(){
 
 	require 'Inclu/Inclu_Footer_01.php';
 	
- function admin(){
-
-	//print("ME CAGO EN ********* TOOOOOO.");
-	require_once('geo_class/geoplugin.class.php');
-	$geoplugin = new geoPlugin();
-	$geoplugin->locate();
-
- $text_body = " <!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">
-				<html>
-					<head>
-						<title>Untitled Document</title>
-						<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
-						<meta http-equiv='content-type' content='text/html' charset='utf-8' />
-						<meta http-equiv='Content-Language' content='es-es'>
-						<META NAME='Language' CONTENT='Spanish'>
-										<STYLE>
-						body {
-							font-family: 'Times New Roman', Times, serif;
-						}
-						body a {
-							text-decoration:none;
-						}
-						table a {
-							color: #666666;
-							text-decoration: none;
-							font-family: 'Times New Roman', Times, serif;
-						}
-						table a:hover {
-							color: #FF9900;
-							text-decoration: none;
-						}
-						tr {
-							margin: 0px;
-							padding: 0px;
-						}
-						td {
-							margin: 0px;
-							padding: 6px;
-						}
-						th {
-							padding: 6px;
-							margin: 0px;
-							text-align: center;
-							color: #666666;
-						}
-					</STYLE>
-</head>
-						<body bgcolor='#D7F0E7'>
-	<table font-family='Times New Roman' width='90%' border='0' align='center' cellpadding='0' cellspacing='0'>
-				<tr>
-					<th colspan='3'>MENSAJE AUTOMÁTICO</th>
-				</tr>
-				<tr>
-				<th colspan='3'>
-					VISITA Nº.".$_SESSION['vt']." A WEB CV ".$_SESSION['title'].".
-				</th>
-				</tr>
-				<tr>
-					<td align='right'>FECHA:</td>
-					<td>&nbsp;</td>
-					<td align='left'>".date('d-m-Y/H:i:s')."</td>
-				</tr>
-				<tr>
-					<td align='right'>URL:</td>
-					<td>&nbsp;</td>
-					<td align='left'>".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']."</td>
-				</tr>
-				<tr>
-					<td align='right'>SERVER NAME:</td>
-					<td>&nbsp;</td>
-					<td align='left'>".$_SERVER['SERVER_NAME']."</td>
-				</tr>
-				<tr>
-					<td align='right'>SERVER IP:</td>
-					<td>&nbsp;</td>
-					<td align='left'>".$_SERVER['SERVER_ADDR']."</td>
-				</tr>
-				<tr>
-					<td align='right'>SERVER ADMIN:</td>
-					<td>&nbsp;</td>
-					<td align='left'>".$_SERVER['SERVER_ADMIN']."</td>
-				</tr>
-					<tr>
-					<td align='right'>IP ACCESS:</td>
-					<td>&nbsp;</td>
-					<td align='left'>".$_SERVER['REMOTE_ADDR']."</td>
-				</tr>
-				<tr>
-					<td align='right'>GEOLOCATION FOR:</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->ip}</td>
-				</tr>
-				<tr>
-					<td align='right'>LATITUD:</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->latitude}</td>
-				</tr>
-				<tr>
-					<td align='right'>LONGITUD:</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->longitude}</td>
-				</tr>
-				<tr>
-					<td align='right'>COUNTRY NAME</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->countryName}</td>
-				</tr>
-				<tr>
-					<td align='right'>COUNTY CODE:</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->countryCode}</td>
-				</tr>
-				<tr>
-					<td align='right'>REGION:</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->region}</td>
-				</tr>
-				<tr>
-					<td align='right'>CITY:</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->city}</td>
-				</tr>
-				<tr>
-					<td align='right'>AREA CODE:</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->areaCode}</td>
-				</tr>
-				<tr>
-					<td align='right'>DMA CODE:</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->dmaCode}</td>
-				</tr>
-					</table>
-				</body>
-			</html>";
-			
-	$headers = array ('From' => "juanbarrospazos@hotmail.es",
-				'Subject' => "VISITA Nº.".$_SESSION['vt']." A WEB CV ".$_SESSION['title'].".");
-				$destinatario= $_SESSION['mmail'];
-				$titulo= "VISITA Nº.".$_SESSION['vt']." A WEB CV ".$_SESSION['title'].".";
-				$responder= $_SESSION['mmail'];
-				$remite= $_SESSION['mmail'];
-				$remitente= "MENSAJE AUTOMATICO VISITA CV";
-				$separador = "_separador".md5 (uniqid (rand()));
-				
-				$cabecera = "Date: ".date('l j F Y, G:i')."\n";
-				$cabecera .="MIME-Version: 1.0\n";
-				$cabecera .="From: ".$remitente."<".$remite.">\n";
-				$cabecera .="Return-path: ". $remite."\n";
-				$cabecera .= "Reply-To: ".$remite."\n";
-				$cabecera .="X-Mailer: PHP/". phpversion()."\n";
-				$cabecera .= "Content-Type: multipart/mixed;"."\n";
-				$cabecera .= " boundary=$separador"."\r\n\r\n";	/**/
-				
-				$texto_html ="\n"."--$separador"."\n";			/**/
-				$texto_html .="Content-Type:text/html; charset=\'utf-8\'"."\n";
-				$texto_html .="Content-Transfer-Encoding: 7bit"."\r\n\r\n";
-				$texto_html .= $text_body;
-				
-				$mensaje= $texto_html;
-				
-			if( mail($destinatario, $titulo, $mensaje, $cabecera)){print("");
-							}else{print("");}
-		}
-
 ?>

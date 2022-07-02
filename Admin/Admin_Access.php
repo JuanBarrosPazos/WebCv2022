@@ -338,7 +338,7 @@ function process_form(){
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-function show_form($errors=''){
+function show_form($errors=[]){
 	
 	if($_POST['oculto']){
 		$defaults = $_POST;

@@ -15,7 +15,7 @@ GNU General Public License for more details.
 
 @author geoPlugin (gp_support@geoplugin.com)
 @copyright Copyright geoPlugin (gp_support@geoplugin.com)
-$version 1.01
+$version 1.2
 
 
 This PHP class uses the PHP Webservice of http://www.geoplugin.com/ to geolocate IP addresses
@@ -29,27 +29,47 @@ See http://www.geoplugin.com/webservices/php for more specific details of this f
 class geoPlugin {
 	
 	//the geoPlugin server
-	var $host = 'http://www.geoplugin.net/php.gp?ip={IP}&base_currency={CURRENCY}';
+	var $host = 'http://www.geoplugin.net/php.gp?ip={IP}&base_currency={CURRENCY}&lang={LANG}';
 		
 	//the default base currency
 	var $currency = 'USD';
 	
+	//the default language
+	var $lang = 'es';
+/*
+supported languages:
+de
+en
+es
+fr
+ja
+pt-BR
+ru
+zh-CN
+*/
+
 	//initiate the geoPlugin vars
 	var $ip = null;
 	var $city = null;
 	var $region = null;
-	var $areaCode = null;
+	var $regionCode = null;
+	var $regionName = null;
 	var $dmaCode = null;
 	var $countryCode = null;
 	var $countryName = null;
+	var $inEU = null;
+	var $euVATrate = false;
 	var $continentCode = null;
+	var $continentName = null;
 	var $latitude = null;
 	var $longitude = null;
+	var $locationAccuracyRadius = null;
+	var $timezone = null;
 	var $currencyCode = null;
 	var $currencySymbol = null;
 	var $currencyConverter = null;
 	
-	function geoPlugin() {
+	function __construct() {
 
 	}
 	
@@ -63,6 +83,7 @@ class geoPlugin {
 		
 		$host = str_replace( '{IP}', $ip, $this->host );
 		$host = str_replace( '{CURRENCY}', $this->currency, $host );
+		$host = str_replace( '{LANG}', $this->lang, $host );
 		
 		$data = array();
 		
@@ -72,18 +93,24 @@ class geoPlugin {
 		
 		//set the geoPlugin vars
 		$this->ip = $ip;
-		$this->city = $data['geoplugin_city'];
-		$this->region = $data['geoplugin_region'];
-		$this->areaCode = $data['geoplugin_areaCode'];
-		$this->dmaCode = $data['geoplugin_dmaCode'];
-		$this->countryCode = $data['geoplugin_countryCode'];
-		$this->countryName = $data['geoplugin_countryName'];
-		$this->continentCode = $data['geoplugin_continentCode'];
-		$this->latitude = $data['geoplugin_latitude'];
-		$this->longitude = $data['geoplugin_longitude'];
-		$this->currencyCode = $data['geoplugin_currencyCode'];
-		$this->currencySymbol = $data['geoplugin_currencySymbol'];
-		$this->currencyConverter = $data['geoplugin_currencyConverter'];
+		$this->city = @$data['geoplugin_city'];
+		$this->region = @$data['geoplugin_region'];
+		$this->regionCode = @$data['geoplugin_regionCode'];
+		$this->regionName = @$data['geoplugin_regionName'];
+		$this->dmaCode = @$data['geoplugin_dmaCode'];
+		$this->countryCode = @$data['geoplugin_countryCode'];
+		$this->countryName = @$data['geoplugin_countryName'];
+		$this->inEU = @$data['geoplugin_inEU'];
+		$this->euVATrate = isset($data['euVATrate']);
+		$this->continentCode = @$data['geoplugin_continentCode'];
+		$this->continentName = @$data['geoplugin_continentName'];
+		$this->latitude = @$data['geoplugin_latitude'];
+		$this->longitude = @$data['geoplugin_longitude'];
+		$this->locationAccuracyRadius = @$data['geoplugin_locationAccuracyRadius'];
+		$this->timezone = @$data['geoplugin_timezone'];
+		$this->currencyCode = @$data['geoplugin_currencyCode'];
+		$this->currencySymbol = @$data['geoplugin_currencySymbol'];
+		$this->currencyConverter = @$data['geoplugin_currencyConverter'];
 		
 	}
 	
@@ -95,7 +122,7 @@ class geoPlugin {
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, $host);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($ch, CURLOPT_USERAGENT, 'geoPlugin PHP Class v1.0');
+			curl_setopt($ch, CURLOPT_USERAGENT, 'geoPlugin PHP Class v1.1');
 			$response = curl_exec($ch);
 			curl_close ($ch);
 			

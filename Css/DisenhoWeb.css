@@ -242,9 +242,10 @@ h1 {
 	margin-top: 6px;
 }
 
+/*
 #form1 #mensaje {
-
 }
+*/
 
 #marque {
 	clear: both;
@@ -405,6 +406,8 @@ a:hover  img {
 	padding-right: 10px;
 	margin-bottom: 14px;
 	margin-top: 14px;
+}
+
 a:active {
 	color: #C30;
 }

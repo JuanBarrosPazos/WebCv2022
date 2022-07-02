@@ -162,8 +162,8 @@ border-radius: 4px;
   <div id="head"> 
   			<font style="font-family:'Times New Roman', Times, serif; font-size:24px">
   				<?php 
-				$title = $_SESSION['title'];
-				print("".strtoupper($title)."."); ?>
+                $title = $_SESSION['title'];
+				print("".$_SESSION['title']."."); ?>
             </font>
   	<br />
 			<font style="font-family:'Times New Roman', Times, serif; font-size:16px">

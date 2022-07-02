@@ -1,38 +1,42 @@
 <?php
 
+	//require 'Inclu/error_hidden.php';	
 	require 'Inclu/Inclu_Menu_00c.php';
 	//require 'Inclu/Admin_0.php';
 	if(isset($_POST['config'])){
 							
-	if($form_errors = validate_form()){
-										show_form($form_errors);
+	if($form_errors = validate_form()){	show_form($form_errors);
 										require 'Inclu/Inclu_Footer_01.php';
 																	} 
 	else {	process_form();
 			require 'Conections/conection.php';
 			global $db;
-			$db = mysqli_connect($db_host,$db_user,$db_pass,$db_name);
+			mysqli_report(MYSQLI_REPORT_OFF);
+			@$db = mysqli_connect($db_host,$db_user,$db_pass,$db_name);
 	
 	if (!$db){ 	global $dbconecterror;
-				$dbconecterror = $dbname." * ".mysqli_connect_error()."\n"; 
+				@$dbconecterror = $dbname." * ".mysqli_connect_error()."\n"; 
 				print ("<br/><font color='#FF0000'>NO CONECTA A BBDD ".$db_name."</br>".mysqli_connect_error()."/font");
 						show_form();
 						require 'Inclu/Inclu_Footer_01.php';
-//						require 'Inclu/Admin_0.php';
+						//require 'Inclu/Admin_0.php';
 			}else{	crear_tablas();
 					admin();
 					require 'Inclu/Inclu_Footer_01.php';
 					}
 			}
 
-	} else {
-			show_form();
+	} else {show_form();
 			require 'Inclu/Inclu_Footer_01.php';
 							}
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 function validate_form(){
+
+	error_reporting (0);
+
+	$errors = array();
 	
 	if(strlen(trim($_POST['host'])) == 0){
 		$errors [] = "HOST: <font color='#FF0000'> es obligatorio.</font>";
@@ -368,20 +372,14 @@ function show_form($errors=[]){
 								   }
 	
 	if ($errors){
-		print("	<div width='90%' style='float:left'>
-					<table align='left' style='border:none'>
-					<th style='text-align:left'>
+		print("	<div align='center' class='centraerror'>
 					<font color='#FF0000'>* SOLUCIONE ESTOS ERRORES:</font><br/>
-					</th>
-					<tr>
-					<td style='text-align:left'>");
+					<div style='text-align:left'>");
 			
 		for($a=0; $c=count($errors), $a<$c; $a++){
 			print("<font color='#FF0000'>**</font>  ".$errors [$a]."<br/>");
 			}
-		print("</td>
-				</tr>
-				</table>
+		print("</div>
 				</div>
 				<div style='clear:both'></div>");
 		}
