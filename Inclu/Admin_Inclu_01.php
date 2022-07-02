@@ -73,90 +73,10 @@
  }
  </script>
 
-<style>
-#ventana-flotante {
-width: 400px;  /* Ancho de la ventana */
-height: 80px;  /* Alto de la ventana */
-background: #E4F1F1;  /* Color de fondo */
-position: fixed;
-top: 26%;
-left: 46%;
-margin-left: -180px;
-border: 1px solid #408080;  /* Borde de la ventana */
-box-shadow: 0 5px 25px rgba(0,0,0,.1);  /* Sombra */
-z-index:999;
-}
-#ventana-flotante .cerrar {
-float: right;
-border-bottom: 1px solid #408080;
-border-left: 1px solid #408080;
-color: #990000;
-background: #E4F1F1;
-line-height: 17px;
-text-decoration: none;
-padding: 0px 14px;
-font-family: Arial;
-border-radius: 0 0 0 5px;
-box-shadow: -1px 1px white;
-font-size: 18px;
--webkit-transition: .3s;
--moz-transition: .3s;
--o-transition: .3s;
--ms-transition: .3s;
-}
-#ventana-flotante .cerrar:hover {
-background: #990000;
-color: white;
-text-decoration: none;
-text-shadow: -1px -1px #990000;;
-border-bottom: 1px solid #990000;;
-border-left: 1px solid #990000;;
-}
-#ventana-flotante .contenido {
-padding: 15px;
-box-shadow: inset 1px 1px white;
-/*background: #deffc4;   Fondo del mensaje */
-/*border: 1px solid #9eff9e;   Borde del mensaje */
-font-size: 18px;  /* Tamaño del texto del mensaje */
-color: #555;  /* Color del texto del mensaje */
-text-shadow: 1px 1px white;
-margin: 0 auto;
-border-radius: 4px;
-}
-#ventana-flotante a {
-	color: #666;
-	text-decoration: none;
-}
-#ventana-flotante a:hover {
-	color: #990000;
-	text-decoration: none;
-}
-
-
-.oculto {-webkit-transition:1s;-moz-transition:1s;-o-transition:1s;-ms-transition:1s;opacity:0;-ms-opacity:0;-moz-opacity:0;visibility:hidden;}
-</style>
 
 </head>
 
 <body topmargin="0" onload="hora()">
-
-
-
-<div id='ventana-flotante'>
-   <a class='cerrar' href='javascript:void(0);' onclick='document.getElementById(&apos;ventana-flotante&apos;).className = &apos;oculto&apos;'>X</a>
-        <!--[if IE]>
-        <style>
-        .oculto {display:none}
-        </style>
-        <![endif]-->
-       <div class='contenido' align="center" style="padding-top:20px">
-       				DOWNLOAD THIS APP FREE AND MORE IN:
-            <br/>
-<a href="http://juanbarrospazos.blogspot.com.es/" target="_blank" style="text-decoration:none" onclick='document.getElementById(&apos;ventana-flotante&apos;).className = &apos;oculto&apos;'>	
-  				http://juanbarrospazos.blogspot.com.es/
-            </a>
-       </div>
-</div>
 
 
 <div id="Conte">
