@@ -2,19 +2,9 @@
 session_start();
 
 	require '../Inclu/Inclu_Menu_00c2.php';
-
 	require '../Conections/conection.php';
-
-
-	$db = mysqli_connect($db_host,$db_user,$db_pass,$db_name);
-	if (!$db){ die ("Es imposible conectar con la bbdd ".$db_name."<br/>".mysqli_connect_error());
-				}
-
-	@$sqld =  "SELECT * FROM `admin` WHERE `Email` = '$_POST[Email]' OR `Usuario` = '$_POST[Usuario]'";
- 	
-	$qd = mysqli_query($db, $sqld);
-	
-	$rowd = mysqli_fetch_assoc($qd);
+	require '../Conections/conexion_bbdd.php';
+	require '../Admin/Admin_select_rowd.php';
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -541,6 +531,8 @@ function show_form($errors=[]){
 	
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-	require '../Inclu/Admin_Inclu_02.php';
+	require '../Inclu/Inclu_Footer.php';
+
+					 /* Creado por Juan Manuel Barrós Pazos 2008/2022 */
 		
 ?>

@@ -2,18 +2,8 @@
 session_start();
 
 	require '../Inclu/Admin_Inclu_01b.php';
-
-		require '../Conections/conection.php';
-
-	$db = mysqli_connect($db_host,$db_user,$db_pass,$db_name);
-	if (!$db){ die ("Es imposible conectar con la bbdd ".$db_name."<br/>".mysqli_connect_error());
-				}
-
-	$sqld =  "SELECT * FROM `admin` WHERE `ID` = '$_POST[ID]'";
- 	
-	$qd = mysqli_query($db, $sqld);
-	
-	$rowd = mysqli_fetch_assoc($qd);
+	require '../Conections/conection.php';
+	require '../Conections/conexion_bbdd.php';
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -23,10 +13,10 @@ if ((trim($_SESSION['Nivel']) == 'XBPadmin')){
 				
 					master_index();
 
-							if ($_POST['oculto2']){
+							if (isset($_POST['oculto2'])){
 								show_form();
 								}
-							elseif($_POST['oculto']){
+							elseif(isset($_POST['oculto'])){
 								
 									if($form_errors = validate_form()){
 										show_form($form_errors);
@@ -38,24 +28,9 @@ if ((trim($_SESSION['Nivel']) == 'XBPadmin')){
 											show_form();
 									}
 
-				} else { 
-					
-						print("<table align='center' style=\"margin-top:200px;margin-bottom:200px\">
-									<tr align='center'>
-										<td>
-											<font color='red'>
-												<b>
-													ACCESO RESTRINGIDO.
-												<br/><br/>
-													CONSULTE SUS PERMISOS ADMINISTRATIVOS.
-											</font>
-										</td>
-									</tr>
-								</table>");
-								
-							}
+				} else { require 'Admin_denegado.php'; }
 
-if($_POST['cerrar']){ 
+if(isset($_POST['cerrar'])){ 
 	
 	unset($_SESSION['id']);
 	unset($_SESSION['horas']);
@@ -75,7 +50,6 @@ function validate_form(){
 	
 	global $sqld;
 	global $qd;
-	global $rowd;
 
 	$errors = array();
 	
@@ -137,95 +111,49 @@ function process_form(){
 	
 	$tabla = "<table align='center' style=\"margin-top:20px\" width='50%'>
 				<tr>
-					<th colspan=2  class='BorderInf'>
-						Estos son los nuevos datos.
-					</th>
+					<th colspan=2  class='BorderInf'>Estos son los nuevos datos</th>
 				</tr>
-				
 				<tr>
-					<td width=200px>
-						Year
-					</td>
-					<td width=200px>"
-						.$_POST['year'].
-					"</td>
+					<td width=200px>Year</td>
+					<td width=200px>".$_POST['year']."</td>
 				</tr>
-				
 				<tr>
-					<td>
-						Horas
-					</td>
-					<td>"
-						.$_POST['horas'].
-					"</td>
+					<td>Horas</td>
+					<td>".$_POST['horas']."</td>
 				</tr>				
-				
 				<tr>
-					<td>
-						Sector
-					</td>
-					<td>"
-						.$_POST['sector'].
-					"</td>
+					<td>Sector</td>
+					<td>".$_POST['sector']."</td>
+				</tr>
+				<tr>
+					<td>Sector2</td>
+					<td>".$_POST['sector2']."</td>
+				</tr>
+				<tr>
+					<td>Modalidad</td>
+					<td>".$_POST['modalidad']."</td>
+				</tr>
+				<tr>
+					<td>Titulo</td>
+					<td>".$_POST['titulo']."</td>
+				</tr>
+				<tr>
+					<td>Modulos</td>
+					<td>".$_POST['modulos']."</td>
+				</tr>
+				<tr>
+					<td>Academia</td>
+					<td>".$_POST['academia']."</td>
+				</tr>
+				<tr>
+					<td>Comentarios</td>
+					<td>".$_POST['coment']."</td>
+				</tr>
+				<tr>
+					<td align='right' colspan=2 ><a href='CV_Ver.php'>INICIO GESTIÓN CV</a></td>
 				</tr>
 
-				<tr>
-					<td>
-						Sector2
-					</td>
-					<td>"
-						.$_POST['sector2'].
-					"</td>
-				</tr>
-				
-				<tr>
-					<td>
-						Modalidad
-					</td>
-					<td>"
-						.$_POST['modalidad'].
-					"</td>
-				</tr>
-				
-				<tr>
-					<td>
-						Titulo
-					</td>
-					<td>"
-						.$_POST['titulo'].
-					"</td>
-				</tr>
-				
-				<tr>
-					<td>
-						Modulos
-					</td>
-					<td>"
-						.$_POST['modulos'].
-					"</td>
-				</tr>
-				
-				<tr>
-				
-					<td>
-						Academia
-					</td>
-					<td>"
-						.$_POST['academia'].
-					"</td>
-				</tr>
-				
-				<tr>
-					<td>
-						Comentarios
-					</td>
-					<td>"
-						.$_POST['coment'].
-					"</td>
-				</tr>
-								
-			</table>	
-		";	 
+			</table>";	 
 
 	global $db_name;
 
@@ -236,16 +164,12 @@ function process_form(){
 					Se han modificado sus datos correctamente");
 			print( $tabla );
 				} else {
-				print("<font color='#FF0000'>
-						* ESTOS DATOS NO SON VALIDOS, MODIFIQUE ESTA ENTRADA: </font>
-						<br/>
-						&nbsp;&nbsp;&nbsp;".mysqli_error($db))."
-						<br/>";
+				print("<font color='#FF0000'>* ESTOS DATOS NO SON VALIDOS, MODIFIQUE ESTA ENTRADA: </font><br/>
+						&nbsp;&nbsp;".mysqli_error($db))."<br/>";
 						show_form ();
-						
-							}
+						}
 		
-			}
+		}
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -253,7 +177,7 @@ global $fil;
 global $fil2;
 global $fil3;
 
-function show_form($errors=''){
+function show_form($errors=[]){
 		
 $fil = $_POST['sector'];
 $fil2 = $_POST['sector2'];
@@ -304,6 +228,13 @@ $fil3 = $_POST['modalidad'];
 					<th colspan=2 class='BorderInf'>
 						Introduzca los nuevos datos en el formulario.
 					</th>
+				</tr>
+				<tr>
+                    <td align='right' colspan=2 class='BorderInf'>
+                        <form name='modifica' action='CV_Ver.php' method='POST'>
+                            <input type='submit' value='CANCELAR' />
+                        </form>
+                    </td>
 				</tr>
 				
 			<form name='form_datos' method='post' action='$_SERVER[PHP_SELF]'>
@@ -507,14 +438,18 @@ $fil3 = $_POST['modalidad'];
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	function master_index(){
-		
-				require '../Inclu/Master_Index_Admin.php';
-				
-				} 
+function master_index(){
+
+	global $RutaDir;
+	$RutaDir = "Admin";
+	require '../Inclu/Master_Index.php';
+			
+	} 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	require '../Inclu/Admin_Inclu_02.php';
+	require '../Inclu/Inclu_Footer.php';
+
+					 /* Creado por Juan Manuel Barrós Pazos 2008/2022 */
 		
 ?>

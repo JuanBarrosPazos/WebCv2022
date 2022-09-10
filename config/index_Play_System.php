@@ -2,16 +2,9 @@
  
 		session_start();
 
-		//require 'Inclu/error_hidden.php';
-
-		require 'Conections/conection.php';
-
-	global $db;
-	global $db_name;
-	
-	$db = mysqli_connect($db_host,$db_user,$db_pass,$db_name);
-	if (!$db){ die ("Es imposible conectar con la bbdd ".$db_name."<br/>".mysqli_connect_error());
-				}
+	//require 'Inclu/error_hidden.php';
+	require 'Conections/conection.php';
+	require '../Conections/conexion_bbdd.php';
 
 ///////////////////////////////////////////////////////////////////////////////////////
 		 
@@ -47,7 +40,6 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 		
-					//require 'Inclu/Admin_2.php';
 				if(isset($_POST['oculto'])){show_form();
 										 process_form();
 										 
@@ -107,7 +99,11 @@ function process_form(){
 	$tot = $rowv['visita'];
 	
 	$fil = "%".$_POST['sector']."%";
-	$orden = $_POST['Orden'];
+
+	global $orden; 
+	if(isset($_POST['Orden'])){$orden = $_POST['Orden'];}
+	else{$orden = "`id` ASC";}
+		
 
 $sqlc =  "SELECT * FROM `web_cv` WHERE `sector` LIKE '$fil' OR `sector2` LIKE '$fil' ORDER BY $orden ";
  	
@@ -530,6 +526,8 @@ function ver_todo(){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-	require 'Inclu/Inclu_Footer_01.php';
+	require 'Inclu/Inclu_Footer.php';
+
+					 /* Creado por Juan Manuel Barrós Pazos 2008/2022 */
 	
 ?>

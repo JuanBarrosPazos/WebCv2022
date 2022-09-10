@@ -2,18 +2,8 @@
 session_start();
 
 	require '../Inclu/Admin_Inclu_01b.php';
-
-		require '../Conections/conection.php';
-
-	$db = mysqli_connect($db_host,$db_user,$db_pass,$db_name);
-	if (!$db){ die ("Es imposible conectar con la bbdd ".$db_name."<br/>".mysqli_connect_error());
-				}
-
-	$sqld =  "SELECT * FROM `admin` WHERE `ID` = '$_POST[ID]'";
- 	
-	$qd = mysqli_query($db, $sqld);
-	
-	$rowd = mysqli_fetch_assoc($qd);
+	require '../Conections/conection.php';
+	require '../Conections/conexion_bbdd.php';
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,24 +25,9 @@ if (trim($_SESSION['Nivel']) == 'XBPadmin'){
 											show_form();
 									}
 
-				} else { 
-					
-						print("<table align='center' style=\"margin-top:200px;margin-bottom:200px\">
-									<tr align='center'>
-										<td>
-											<font color='red'>
-												<b>
-													ACCESO RESTRINGIDO.
-												<br/><br/>
-													CONSULTE SUS PERMISOS ADMINISTRATIVOS.
-											</font>
-										</td>
-									</tr>
-								</table>");
-								
-							}
+				} else { require 'Admin_denegado.php'; }
 
-if($_POST['cerrar']){ 
+if(isset($_POST['cerrar'])){ 
 	
 	unset($_SESSION['ID']);
 	unset($_SESSION['Nivel']);
@@ -161,7 +136,7 @@ function process_form(){
 				print("<font color='#FF0000'>
 						SE HA PRODUCIDO UN ERROR: </font>
 						<br/>
-						&nbsp;&nbsp;$nbsp;".mysqli_error($db))."
+						&nbsp;&nbsp;&nbsp;".mysqli_error($db))."
 						<br/>";
 						show_form ();
 						
@@ -172,13 +147,9 @@ function process_form(){
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 					
-			$id = $_POST['id'];
-
-function show_form($errors=''){
+function show_form(){
 		
 	if($_POST['oculto2']){
-		
-	
 
 				$defaults = array ( 'id' => $_POST['id'],
 									'year' => $_POST['year'],
@@ -208,27 +179,8 @@ function show_form($errors=''){
 																	 );
 											   							}
 	
-	if ($errors){
-		print("	<div width='90%' style='float:left'>
-					<table align='left' style='border:none'>
-					<th style='text-align:left'>
-					<font color='#FF0000'>* SOLUCIONE ESTOS ERRORES:</font><br/>
-					</th>
-					<tr>
-					<td style='text-align:left'>");
-			
-		for($a=0; $c=count($errors), $a<$c; $a++){
-			print("<font color='#FF0000'>**</font>  ".$errors [$a]."<br/>");
-			}
-		print("</td>
-				</tr>
-				</table>
-				</div>
-				<div style='clear:both'></div>");
-		}
 
-	print("
-			<table align='center' border=0>
+	print("<table align='center' border=0>
 				<tr>
 					<th colspan=2 class='BorderInf'>
 						<font color='#FF0000'>
@@ -239,12 +191,11 @@ function show_form($errors=''){
 					</th>
 				</tr>
 				<tr>
-					<th colspan=2 class='BorderInf' style=\"text-align:right\">
-							<a href='CV_Borrar_01.php' >
-													CANCELAR
-							</a>
-						</font>
-					</th>
+                    <td align='right' colspan=2 class='BorderInf'>
+                        <form name='modifica' action='CV_Ver.php' method='POST'>
+                            <input type='submit' value='CANCELAR' />
+                        </form>
+                    </td>
 				</tr>
 				
 			<form name='borrar' method='post' action='$_SERVER[PHP_SELF]'>
@@ -326,43 +277,34 @@ function show_form($errors=''){
 					<td>
 				".$defaults['coment']."
 	<input type='hidden' name='coment' value='".$defaults['coment']."' />
-
 					</td>
 				</tr>
-				
-				
 				<tr align='center' height=60px>
-					<td >
-						<input type='submit' value='Borrar Estos Datos' />
+					<td colspan=2 >
+						<input type='submit' value='BORRAR ESTA ENTRADA' />
 						<input type='hidden' name='oculto' value=1 />
-						
-					</td>
-					
-					<td align='right'>
-						<input type='reset' value='Limpiar Formulario' />
-						
+		</form>														
 					</td>
 				</tr>
-				
-		</form>														
-			
-			</table>				
-
-				"); 
+			</table>"); 
 
 	
 	}	
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	function master_index(){
-		
-				require '../Inclu/Master_Index_Admin.php';
-				
-				} 
+function master_index(){
+
+	global $RutaDir;
+	$RutaDir = "Admin";
+	require '../Inclu/Master_Index.php';
+			
+	} 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	require '../Inclu/Admin_Inclu_02.php';
+	require '../Inclu/Inclu_Footer.php';
+
+					 /* Creado por Juan Manuel Barrós Pazos 2008/2022 */
 		
 ?>

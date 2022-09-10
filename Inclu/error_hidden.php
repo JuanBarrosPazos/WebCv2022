@@ -28,4 +28,6 @@
 // Lo mismo que error_reporting(E_ALL);
 // ini_set('error_reporting', E_ALL);
 
+					 /* Creado por Juan Manuel Barrós Pazos 2008/2022 */
+
 ?>

@@ -2,12 +2,8 @@
 session_start();
 
 	require '../Inclu/Admin_Inclu_01b.php';
-
-		require '../Conections/conection.php';
-
-	$db = mysqli_connect($db_host,$db_user,$db_pass,$db_name);
-	if (!$db){ die ("Es imposible conectar con la bbdd ".$db_name."<br/>".mysqli_connect_error());
-				}
+	require '../Conections/conection.php';
+	require '../Conections/conexion_bbdd.php';
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -17,10 +13,10 @@ if (trim($_SESSION['Nivel']) == 'XBPadmin'){
 				
 					master_index();
 
-							if ($_POST['oculto2']){
+							if (isset($_POST['oculto2'])){
 								show_form();
 								}
-							elseif($_POST['oculto']){
+							elseif(isset($_POST['oculto'])){
 								
 												process_form();
 												
@@ -28,24 +24,9 @@ if (trim($_SESSION['Nivel']) == 'XBPadmin'){
 								} else {
 											show_form();
 									}
-				} else { 
-					
-						print("<table align='center' style=\"margin-top:200px;margin-bottom:200px\">
-									<tr align='center'>
-										<td>
-											<font color='red'>
-												<b>
-													ACCESO RESTRINGIDO.
-												<br/><br/>
-													CONSULTE SUS PERMISOS ADMINISTRATIVOS.
-											</font>
-										</td>
-									</tr>
-								</table>");
+				} else { require 'Admin_denegado.php'; }
 
-							}
-
-if($_POST['cerrar']){ 
+if(isset($_POST['cerrar'])){ 
 	
 	unset($_SESSION['ID']);
 	unset($_SESSION['Nivel']);
@@ -201,7 +182,7 @@ function process_form(){
 				print("<font color='#FF0000'>
 						SE HA PRODUCIDO UN ERROR: </font>
 						<br/>
-						&nbsp;&nbsp;$nbsp;".mysqli_error($db))."
+						&nbsp;&nbsp;&nbsp;".mysqli_error($db))."
 						<br/>";
 						show_form ();
 						
@@ -211,8 +192,9 @@ function process_form(){
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 					
-			$id = $_POST['Id'];
-
+	global $id;
+	if (isset($_POST['Id'])){ $id = $_POST['Id']; } else { $id = '';}
+	
 function show_form(){
 		
 	if($_POST['oculto2']){
@@ -231,7 +213,7 @@ function show_form(){
 									'Tlf2' => $_POST['Tlf2'],
 																		 );
 								   											}
-	if($_POST['oculto']){
+	if(isset($_POST['oculto'])){
 		
 				$defaults = array ( 'ID' => $_POST['ID'],
 									'Nombre' => $_POST['Nombre'],
@@ -261,7 +243,7 @@ function show_form(){
 				</tr>
 				<tr>
 					<th colspan=2 class='BorderInf' style=\"text-align:right\">
-							<a href='Admin_Borrar_01.php' >
+							<a href='Admin_Ver.php' >
 													CANCELAR
 							</a>
 						</font>
@@ -405,14 +387,18 @@ function show_form(){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	function master_index(){
-		
-				require '../Inclu/Master_Index_Admin.php';
-				
-				} 
+function master_index(){
+
+	global $RutaDir;
+	$RutaDir = "Admin";
+	require '../Inclu/Master_Index.php';
+			
+	} 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	require '../Inclu/Admin_Inclu_02.php';
-		
+	require '../Inclu/Inclu_Footer.php';
+
+					 /* Creado por Juan Manuel Barrós Pazos 2008/2022 */
+
 ?>

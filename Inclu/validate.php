@@ -290,7 +290,7 @@ $numero = substr($dni2, 0, 8);
 
 $numero = str_replace(array('X', 'Y', 'Z'), array(0, 1, 2), $numero);	
 
-$modulo = $numero % 23;
+$modulo = (int) $numero % 23;
 $letras_validas = "TRWAGMYFPDXBNJZSQVHLCKE";
 $letra2 = substr($letras_validas, $modulo, 1);
 //	print ("ESTA ES LA LETRA NIE $letra2 </br>");
@@ -302,39 +302,39 @@ $letra2 = substr($letras_validas, $modulo, 1);
 
 $dni3 = $_POST['dni'];
 
-$num1 = $dni3[1];
-$num2 = $dni3[2];
-$num3 = $dni3[3];
-$num4 = $dni3[4];
-$num5 = $dni3[5];
-$num6 = $dni3[6];
-$num7 = $dni3[7];
+@$num1 = $dni3[1];
+@$num2 = $dni3[2];
+@$num3 = $dni3[3];
+@$num4 = $dni3[4];
+@$num5 = $dni3[5];
+@$num6 = $dni3[6];
+@$num7 = $dni3[7];
 
-$sumaa = $num2 + $num4 + $num6 ;
+@$sumaa = (int) $num2 + (int) $num4 + (int) $num6 ;
 // print ("LA SUMA A: $num2 + $num4 + $num6 = $sumaa </br>");
 
-$sumab1 = $num1 * 2;
+$sumab1 = (int) $num1 * 2;
 $sumab1 = "$sumab1";
 if ($sumab1 < 10){ 	$sumab1st = "0$sumab1";
     $sumab1tot = ($sumab1st[0] + $sumab1st[1]);
                             }
     elseif ($sumab1 > 9) { 	$sumab1st = "$sumab1";
                             $sumab1tot = ($sumab1st[0] + $sumab1st[1]);}
-$sumab3 = $num3 * 2;
+$sumab3 = (int) $num3 * 2;
 $sumab3 = "$sumab3";
 if ($sumab3 < 10){ 	$sumab3st = "0$sumab3";
     $sumab3tot = ($sumab3st[0] + $sumab3st[1]);
                             }
     elseif ($sumab3 > 9) { 	$sumab3st = "$sumab3";
                             $sumab3tot = ($sumab3st[0] + $sumab3st[1]);}
-$sumab5 = $num5 * 2;
+$sumab5 = (int) $num5 * 2;
 $sumab5 = "$sumab5";
 if ($sumab5 < 10){ 	$sumab5st = "0$sumab5";
     $sumab5tot = ($sumab5st[0] + $sumab5st[1]);
                             }
     elseif ($sumab5 > 9) { 	$sumab5st = "$sumab5";
                             $sumab5tot = ($sumab5st[0] + $sumab5st[1]);}
-$sumab7 = $num7 * 2;
+$sumab7 = (int) $num7 * 2;
 $sumab7 = "$sumab7";
 if ($sumab7 < 10){ 	$sumab7st = "0$sumab7";
     $sumab7tot = ($sumab7st[0] + $sumab7st[1]);
@@ -353,19 +353,19 @@ $sumatot = $sumaa + $sumab;
 
 $sumatotc ="$sumatot";
 
-if ($sumatotc[1] == 0) {	$sumacont = 0;
+if (@$sumatotc[1] == 0) {	$sumacont = 0;
             // print ("TOTAL SUMA CONTROL = $sumacont </br>");
                         }
                         
-else {	$sumacont = 10 - $sumatotc[1];
+else {	$sumacont = 10 - @(int) $sumatotc[1];
     // print ("TOTAL SUMA CONTROL = 10 - $sumatotc[1] = $sumacont </br>");
                             }
                             
 $nifcontrolnumero = "0123456789";
 $nifcontrolletra = "JABCDEFGHI";
 
-$nifnumero = $nifcontrolnumero[$sumacont];
-$nifletra = $nifcontrolletra[$sumacont];
+$nifnumero = @$nifcontrolnumero[$sumacont];
+$nifletra = @$nifcontrolletra[$sumacont];
 
 // print ("NUMERO: $nifnumero </br>");
 // print ("LETRA: $nifletra </br>");
@@ -402,7 +402,7 @@ $errors [] = "Letra Control NIE/NIF: <font color='#FF0000'>Solo mayusculas.</fon
 
 elseif ($_POST['doc'] == 'NIE') {
 
-if (trim($_POST['ldni'] !== $letra2)){
+if (trim($_POST['ldni'] != $letra2)){
 $errors [] = "Letra Control NIE Extranjeros: <font color='#FF0000'>Letra no correcta.</font>";
 }
 
@@ -413,7 +413,7 @@ $errors [] = "Letra Control NIE Extranjeros: <font color='#FF0000'>Letra no corr
 
 elseif (($_POST['doc'] == 'NIFespecial') || ($_POST['doc'] == 'NIFee') || ($_POST['doc'] == 'NIFcl') || ($_POST['doc'] == 'NIFop') || ($_POST['doc'] == 'NIFcir') || ($_POST['doc'] == 'NIFoaeca') || ($_POST['doc'] == 'NIFepenr')) {
 
-if (trim($_POST['ldni'] !== $nifletra)){
+if (trim($_POST['ldni'] != $nifletra)){
 $errors [] = "Letra Control NIF Especial: <font color='#FF0000'>Letra no correcta.</font>";
 }
 
@@ -432,7 +432,7 @@ $errors [] = "Numero Control NIF Especial : <font color='#FF0000'>Sólo números
 
 /* CONDICIONAL PARA VALIDAR EL NUMERO DE CONTROL */
 
-else { if (trim($_POST['ldni'] !== $nifnumero)){
+else { if (trim($_POST['ldni'] != $nifnumero)){
 		$errors [] = "Numero Control NIF Especial: <font color='#FF0000'>Numero incorrecto.</font>";
 			}
 		}
@@ -509,7 +509,7 @@ else { if (trim($_POST['ldni'] !== $nifnumero)){
 	$errors [] = "Usuario: <font color='#FF0000'>No se puede registrar con este nombre de usuario.</font>";
 	}	
 	
-	elseif(trim($_POST['Usuario'] !== $_POST['Usuario2'])){
+	elseif(trim($_POST['Usuario'] != $_POST['Usuario2'])){
 		$errors [] = "Usuario: <font color='#FF0000'>No son iguales los dos campos usuario.</font>";
 		}
 		
@@ -527,7 +527,7 @@ else { if (trim($_POST['ldni'] !== $nifnumero)){
 	$errors [] = "Password: <font color='#FF0000'>No se admiten carácteres especiales.</font>";
 	}
 	
-	elseif(trim($_POST['Password'] !== $_POST['Password2'])){
+	elseif(trim($_POST['Password'] != $_POST['Password2'])){
 	$errors [] = "Password: <font color='#FF0000'>No son iguales los dos campos password.</font>";
 	}
 	
@@ -575,5 +575,6 @@ if(strlen(trim($_POST['Tlf1'])) == 0){
 	
 /* La función devuelve el array errors. */
 	
+					 /* Creado por Juan Manuel Barrós Pazos 2008/2022 */
 
 ?>

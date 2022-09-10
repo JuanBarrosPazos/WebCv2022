@@ -2,18 +2,8 @@
 session_start();
 
 	require '../Inclu/Admin_Inclu_01b.php';
-
-		require '../Conections/conection.php';
-
-	$db = mysqli_connect($db_host,$db_user,$db_pass,$db_name);
-	if (!$db){ die ("Es imposible conectar con la bbdd ".$db_name."<br/>".mysqli_connect_error());
-				}
-
-	$sqld =  "SELECT * FROM `admin` WHERE `Email` = '$_POST[Email]' OR `Usuario` = '$_POST[Usuario]'";
- 	
-	$qd = mysqli_query($db, $sqld);
-	
-	$rowd = mysqli_fetch_assoc($qd);
+	require '../Conections/conection.php';
+	require 'Admin_select_rowd.php';
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -23,7 +13,7 @@ if (trim($_SESSION['Nivel']) == 'XBPadmin'){
 				
 					master_index();
 
-						if($_POST['oculto']){
+						if(isset($_POST['oculto'])){
 							
 								if($form_errors = validate_form()){
 									show_form($form_errors);
@@ -34,24 +24,9 @@ if (trim($_SESSION['Nivel']) == 'XBPadmin'){
 							} else {
 										show_form();
 								}
-				} else { 
-					
-						print("<table align='center' style=\"margin-top:200px;margin-bottom:200px\">
-									<tr align='center'>
-										<td>
-											<font color='red'>
-												<b>
-													ACCESO RESTRINGIDO.
-												<br/><br/>
-													CONSULTE SUS PERMISOS ADMINISTRATIVOS.
-											</font>
-										</td>
-									</tr>
-								</table>");
-								
-							} 
+				} else { require 'Admin_denegado.php'; } 
 
-if($_POST['cerrar']){ 
+if(@$_POST['cerrar']){ 
 	
 	unset($_SESSION['id']);
 	unset($_SESSION['horas']);
@@ -73,54 +48,9 @@ function validate_form(){
 	global $qd;
 	global $rowd;
 
-	$errors = array();
-	
-	if(strlen(trim($_POST['year'])) == 0){
-		$errors [] = "Year: <font color='#FF0000'>Este campo es obligatorio.</font>";
-		}
-	
-	elseif (strlen(trim($_POST['year'])) < 4){
-		$errors [] = "Year: <font color='#FF0000'>Escriba más de tres carácteres.</font>";
-		}
-		
-	if(strlen(trim($_POST['horas'])) == 0){
-		$errors [] = "Horas: <font color='#FF0000'>Este campo es obligatorio.</font>";
-		}
-	
-	
-	elseif (strlen(trim($_POST['horas'])) < 2){
-		$errors [] = "Horas: <font color='#FF0000'>Escriba más de 1 carácter.</font>";
-		}
-		
-	if(strlen(trim($_POST['titulo'])) == 0){
-		$errors [] = "Titulo: <font color='#FF0000'>Este campo es obligatorio.</font>";
-		}
-	
-	elseif (strlen(trim($_POST['titulo'])) < 11){
-		$errors [] = "Titulo: <font color='#FF0000'>Escriba más de 10 carácteres.</font>";
-		}
-		
-	if(strlen(trim($_POST['modulos'])) == 0){
-		$errors [] = "Modulos: <font color='#FF0000'>Este campo es obligatorio.</font>";
-		}
-	
-	elseif (strlen(trim($_POST['modulos'])) < 11){
-		$errors [] = "Modulos: <font color='#FF0000'>Escriba más de 10 carácteres.</font>";
-		}
-		
-	if ($_POST['sector'] == '') { 
-		$errors [] = "Sector: <font color='#FF0000'>Seleccione un sector</font>";
-		}	
-		
-	if ($_POST['sector2'] == '') { 
-		$errors [] = "Sector 2: <font color='#FF0000'>Seleccione un sector</font>";
-		}	
-		
-	if ($_POST['modalidad'] == '') { 
-		$errors [] = "Modalidad: <font color='#FF0000'>Seleccione una modalidad</font>";
-		}	
-		
-	return $errors;
+	require 'CV_Validate.php';
+
+		return $errors;
 
 		} 
 		
@@ -136,91 +66,46 @@ function process_form(){
 						Se han grabado los siguientes datos.
 					</th>
 				</tr>
-												
 				<tr>
-					<td>
-						Year
-					</td>
-					<td>"
-						.$_POST['year'].
-					"</td>
+					<td>Year</td>
+					<td>".$_POST['year']."</td>
 				</tr>				
-				
 				<tr>
-					<td>
-						Horas
-					</td>
-					<td>"
-						.$_POST['horas'].
-					"</td>
+					<td>Horas</td>
+					<td>".$_POST['horas']."</td>
 				</tr>
-				
 				<tr>
-					<td>
-						Sector
-					</td>
-					<td>"
-						.$_POST['sector'].
-					"</td>
+					<td>Especialidad 1</td>
+					<td>".$_POST['sector']."</td>
 				</tr>
-				
 				<tr>
-					<td>
-						Sector2
-					</td>
-					<td>"
-						.$_POST['sector2'].
-					"</td>
+					<td>Especialidad 2</td>
+					<td>".$_POST['sector2']."</td>
 				</tr>
-				
 				<tr>
-					<td>
-						Modalidad
-					</td>
-					<td>"
-						.$_POST['modalidad'].
-					"</td>
+					<td>Modalidad</td>
+					<td>".$_POST['modalidad']."</td>
 				</tr>
-				
 				<tr>
-					<td>
-						Titulo
-					</td>
-					<td>"
-						.$_POST['titulo'].
-					"</td>
+					<td>Titulo</td>
+					<td>".$_POST['titulo']."</td>
 				</tr>
-				
 				<tr>
-				
-					<td>
-						M&oacute;dulos
-					</td>
-					<td>"
-						.$_POST['modulos'].
-					"</td>
+					<td>M&oacute;dulos</td>
+					<td>".$_POST['modulos']."</td>
 				</tr>
-				
 				<tr>
-					<td>
-						Academia
-					</td>
-					<td>"
-						.$_POST['academia'].
-					"</td>
+					<td>Academia</td>
+					<td>".$_POST['academia']."</td>
 				</tr>
-				
 				<tr>
-					<td>
-						Comentarios
-					</td>
-					<td>"
-						.$_POST['coment'].
-					"</td>
+					<td>Comentarios</td>
+					<td>".$_POST['coment']."</td>
 				</tr>
-				
-			</table>	
-		"; 
+				<tr>
+					<td align='right' colspan=2 ><a href='CV_Ver.php'>INICIO GESTIÓN CV</a></td>
+				</tr>
+			</table>"; 
 		
 	global $db_name;
 
@@ -241,16 +126,16 @@ function process_form(){
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-function show_form($errors=''){
+function show_form($errors=[]){
 	
-	if($_POST['oculto']){
+	if(isset($_POST['oculto'])){
 		$defaults = $_POST;
 		} else {
 				$defaults = array ( 'year' => '',
 									'horas' => '',
-									'sector' => $_POST['sector'],
-									'sector2' => $_POST['sector2'],
-									'modalidad' => $_POST['modalidad'],
+									'sector' => @$_POST['sector'],
+									'sector2' => @$_POST['sector2'],
+									'modalidad' => @$_POST['modalidad'],
 									'titulo' => '',
 									'modulos' => '',
 									'academia' => '',
@@ -310,7 +195,7 @@ function show_form($errors=''){
 				<tr>
 					<td>
 						<font color='#FF0000'>*</font>
-						Sector
+						Especialidad 1
 					</td>
 					<td>
 		<select name='sector'>");
@@ -340,7 +225,7 @@ function show_form($errors=''){
 				<tr>
 					<td>
 						<font color='#FF0000'>*</font>
-						Sector2
+						Especialidad 2
 					</td>
 					<td>
 <select name='sector2'>");
@@ -491,15 +376,18 @@ function show_form($errors=''){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	function master_index(){
-		
-				require '../Inclu/Master_Index_Admin.php';
-				
-				} 
+function master_index(){
+
+	global $RutaDir;
+	$RutaDir = "Admin";
+	require '../Inclu/Master_Index.php';
+			
+	} 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	require '../Inclu/Admin_Inclu_02.php';
+	require '../Inclu/Inclu_Footer.php';
 
+					 /* Creado por Juan Manuel Barrós Pazos 2008/2022 */
 		
 ?>

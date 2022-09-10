@@ -2,39 +2,18 @@
 session_start();
 
 	require '../Inclu/Admin_Inclu_01b.php';
-
-		require '../Conections/conection.php';
-
-	$db = mysqli_connect($db_host,$db_user,$db_pass,$db_name);
-	if (!$db){ die ("Es imposible conectar con la bbdd ".$db_name."</br>".mysqli_connect_error());
-				}
+	require '../Conections/conection.php';
+	require '../Conections/conexion_bbdd.php';
 		
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 if ($_SESSION['Nivel'] == 'XBPadmin'){
 
- 					print("Hello ".$_SESSION['Nombre']." ".$_SESSION['Apellidos'].".");
-					master_index();
-
-				if($_POST['oculto']){	process_form();
-
-							} else {
-										show_form();
-								}
-				}else { print("<table align='center' style=\"margin-top:200px;margin-bottom:200px\">
-									<tr align='center'>
-										<td>
-											<font color='red'>
-												<b>
-													ACCESO RESTRINGIDO.
-												</br></br>
-													CONSULTE SUS PERMISOS ADMINISTRATIVOS.
-											</font>
-										</td>
-									</tr>
-								</table>");
-								
-							} 
+ 	print("Hello ".$_SESSION['Nombre']." ".$_SESSION['Apellidos'].".");
+		master_index();
+			if(isset($_POST['oculto'])){ process_form();
+							} else { show_form();}
+	}else { require 'Admin_denegado.php'; } 
 		
 //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -83,13 +62,11 @@ function process_form(){
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-function show_form($errors=''){
+function show_form($errors=[]){
 	
-	if($_POST['oculto']){
+	if(isset($_POST['oculto'])){
 		$defaults = $_POST;
-		} else {
-				$defaults = array (	'url' => $_POST['url'],	
-													);
+		} else { $defaults = array ('url' => @$_POST['url'],);
 							   		}
 
 	if ($errors){
@@ -164,11 +141,13 @@ function show_form($errors=''){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	function master_index(){
-		
-				require '../Inclu/Master_Index_Admin.php';
-		
-				} /* Fin funcion master_index.*/
+function master_index(){
+
+	global $RutaDir;
+	$RutaDir = "Admin";
+	require '../Inclu/Master_Index.php';
+			
+	} 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -188,6 +167,8 @@ function show_form($errors=''){
 	
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-	require '../Inclu/Admin_Inclu_02.php';
+	require '../Inclu/Inclu_Footer.php';
+
+					 /* Creado por Juan Manuel Barrós Pazos 2008/2022 */
 
 ?>

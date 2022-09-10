@@ -2,11 +2,8 @@
 <?php
 
 
-		require '../Conections/conection.php';
-
-	$db = mysqli_connect($db_host,$db_user,$db_pass,$db_name);
-	if (!$db){ die ("Es imposible conectar con la bbdd ".$db_name."<br/>".mysqli_connect_error());
-				}
+	require '../Conections/conection.php';
+	require '../Conections/conexion_bbdd.php';
 
 ///////////////////////////////////////////////////////////////////////////////////////
 		
@@ -20,25 +17,24 @@
 	$_SESSION['mmail'] = $rowt['Email'];
 	require 'Admin_Inclu_01b.php';
 
-	$sql =  "SELECT * FROM `admin` WHERE `Usuario` = '$_POST[Usuario]' AND `Password` = '$_POST[Password]'";
- 	
-	$q = mysqli_query($db, $sql);
-	$row = mysqli_fetch_assoc($q);
+	require '../Admin/Admin_select_rowd.php';
 	
+	if($num > 0){
 	$_SESSION['Nivel'] = $row['Nivel'];
 	$_SESSION['Nombre'] = $row['Nombre'];
 	$_SESSION['Apellidos'] = $row['Apellidos'];
+	} else { }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-if (trim($_SESSION['Nivel']) == 'XBPadmin'){
+if (trim(@$_SESSION['Nivel']) == 'XBPadmin'){
 
  					print("Hello ".$_SESSION['Nombre']." ".$_SESSION['Apellidos'].".");
 				
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-		if($_POST['oculto']){if($form_errors = validate_form()){
+		if(isset($_POST['oculto'])){if($form_errors = validate_form()){
 					print("<table align='center'>
 								<tr>
 									<td>
@@ -148,18 +144,18 @@ if (trim($_SESSION['Nivel']) == 'XBPadmin'){
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-function show_form($errors=''){
+function show_form($errors=[]){
 	
 	
-	if(($_POST['oculto'])||($_POST['enviar'])){
+	if((isset($_POST['oculto']))||(isset($_POST['enviar']))){
 				$defaults = $_POST;
 									} 
 	else {
-				$defaults = array (	'nombre' => $_POST['nombre'],
-									'apellidos' => $_POST['apellidos'],
-									'Email' => $_POST['Email'],	
-									'asunto' => $_POST['asunto'],	
-									'mensaje' => $_POST['mensaje']);
+				$defaults = array (	'nombre' => @$_POST['nombre'],
+									'apellidos' => @$_POST['apellidos'],
+									'Email' => @$_POST['Email'],	
+									'asunto' => @$_POST['asunto'],	
+									'mensaje' => @$_POST['mensaje']);
 									}
 	
 	if ($errors){
@@ -227,13 +223,16 @@ function show_form($errors=''){
  function process_Mail(){	 
 
 	 $text_body = '
-							 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+							 <!DOCTYPE HTML>
 						<html>
 						<head>
 						<title>Untitled Document</title>
 						<meta http-equiv="content-type" content="text/html" charset="utf-8" />
 						<meta http-equiv="Content-Language" content="es-es">
 						<META NAME="Language" CONTENT="Spanish">
+						<!--
+						<meta name="viewport" content="width=device-width, initial-scale=1.0">
+						-->
 						</head>
 						
 						<body bgcolor="#D7F0E7">
@@ -413,6 +412,8 @@ function show_form($errors=''){
 			
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	require 'Admin_Inclu_02.php';
+	require 'Inclu_Footer.php';
+
+					 /* Creado por Juan Manuel Barrós Pazos 2008/2022 */
 
 ?>

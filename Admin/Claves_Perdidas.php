@@ -2,18 +2,13 @@
 session_start();
 
 	require '../Inclu/Admin_Inclu_01b.php';
-
-		require '../Conections/conection.php';
-
-	global $db_name;
-	$db = mysqli_connect($db_host,$db_user,$db_pass,$db_name);
-	if (!$db){ die ("Es imposible conectar con la bbdd ".$db_name."<br/>".mysqli_connect_error());
-				}
+	require '../Conections/conection.php';
+	require '../Conections/conexion_bbdd.php';
 
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-		if($_POST['oculto']){if($form_errors = validate_form()){
+		if(isset($_POST['oculto'])){if($form_errors = validate_form()){
 					print("<table align='center'>
 								<tr>
 									<td>
@@ -57,7 +52,7 @@ session_start();
 										
 							else {show_form();}
 												
-				if($_POST['oculto2']){	process_Mail();
+				if(isset($_POST['oculto2'])){	process_Mail();
 										unset($_SESSION['']);
 														}
 
@@ -122,9 +117,9 @@ $sql =  "SELECT * FROM `$db_name`.`admin` WHERE `Email` = '$_POST[Email]' AND `d
  	
 	$q = mysqli_query($db, $sql);
 	$row = mysqli_fetch_assoc($q);
-	$_SESSION['L_Email'] = $row['Email'];
-	$_SESSION['L_dni'] = $row['dni'];
-	$_SESSION['L_ldni'] = $row['ldni'];
+	$_SESSION['L_Email'] = @$row['Email'];
+	$_SESSION['L_dni'] = @$row['dni'];
+	$_SESSION['L_ldni'] = @$row['ldni'];
 
 	if(trim($_POST['Email'] != $_SESSION['L_Email'])){
 		$errors [] = "Email, Nº DNI o Letra.";
@@ -143,13 +138,18 @@ $sql =  "SELECT * FROM `$db_name`.`admin` WHERE `Email` = '$_POST[Email]' AND `d
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-function show_form($errors=''){
+function show_form($errors=[]){
 	
 	global $sql;
 	global $q;
 	global $row;
 	
-	if($_POST['oculto2']){
+	if(isset($_POST['oculto2'])){
+
+		global $email;
+		if(isset($_POST['Email'])){$email = $_POST['Email'];} else { $email = ''; }
+		global $dni;
+		if(isset($_POST['dni'])){$dni = $_POST['dni'];} else { $dni = ''; }
 		
 				$defaults = array (	'Asunto' => 'Sus claves de usuario Web Cv.',
 									'Email' => $_POST['Email'],
@@ -158,13 +158,14 @@ function show_form($errors=''){
 																		);
 								   }
 	
-	if($_POST['oculto']){
+	if(isset($_POST['oculto'])){
 		$defaults = $_POST;
-		} else {
+		} else {global $ldni; 
+				if(isset($_POST['ldni'])){$ldni = $_POST['ldni']; } else { $ldni = '';}
 				$defaults = array (	'Asunto' => 'Sus claves de usuario Web Cv.',
 									'Email' => '',
 									'dni' => '',
-									'ldni' => $_POST['ldni']	
+									'ldni' => $ldni	
 													);
 									}
 	
@@ -291,13 +292,16 @@ function process_form(){
  function process_Mail(){	 
 
 	 $text_body = '
-							 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+							 <!DOCTYPE HTML>
 						<html>
 						<head>
 						<title>Untitled Document</title>
 						<meta http-equiv="content-type" content="text/html" charset="utf-8" />
 						<meta http-equiv="Content-Language" content="es-es">
 						<META NAME="Language" CONTENT="Spanish">
+						<!--
+						<meta name="viewport" content="width=device-width, initial-scale=1.0">
+						-->
 						</head>
 						
 						<body bgcolor="#D7F0E7">
@@ -501,14 +505,10 @@ function process_form(){
 			
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	function master_index(){
-		
-				require '../Inclu/Master_Index_Admin.php';
-				
-				} 
+	require '../Inclu/Inclu_Footer.php';
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	require '../Inclu/Admin_Inclu_02.php';
+
+					 /* Creado por Juan Manuel Barrós Pazos 2008/2022 */
 
 ?>

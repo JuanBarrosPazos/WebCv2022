@@ -2,17 +2,9 @@
 session_start();
 
 	require '../Inclu/Admin_Inclu_01b.php';
-
-		require '../Conections/conection.php';
-
-	$db = mysqli_connect($db_host,$db_user,$db_pass,$db_name);
-	if (!$db){ die ("Es imposible conectar con la bbdd ".$db_name."<br/>".mysqli_connect_error());
-				}
-
-	$sqld =  "SELECT * FROM `admin` WHERE `Email` = '$_POST[Email]' OR `Usuario` = '$_POST[Usuario]'";
-	$qd = mysqli_query($db, $sqld);
-	
-	$rowd = mysqli_fetch_assoc($qd);
+	require '../Conections/conection.php';
+	require '../Conections/conexion_bbdd.php';
+	require 'Admin_select_rowd.php';
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -22,10 +14,10 @@ if ((trim($_SESSION['Nivel']) == 'XBPadmin')){
 				
 					master_index();
 
-							if ($_POST['oculto2']){
+							if (isset($_POST['oculto2'])){
 								show_form();
 								}
-							elseif($_POST['oculto']){
+							elseif(isset($_POST['oculto'])){
 								
 									if($form_errors = validate_form()){
 										show_form($form_errors);
@@ -37,24 +29,9 @@ if ((trim($_SESSION['Nivel']) == 'XBPadmin')){
 											show_form();
 									}
 
-				} else { 
-					
-						print("<table align='center' style=\"margin-top:200px;margin-bottom:200px\">
-									<tr align='center'>
-										<td>
-											<font color='red'>
-												<b>
-													ACCESO RESTRINGIDO.
-												<br/><br/>
-													CONSULTE SUS PERMISOS ADMINISTRATIVOS.
-											</font>
-										</td>
-									</tr>
-								</table>");
-								
-							}
+				} else { require 'Admin_denegado.php'; }
 
-if($_POST['cerrar']){ 
+if(isset($_POST['cerrar'])){ 
 	
 	unset($_SESSION['ID']);
 	unset($_SESSION['Nivel']);
@@ -227,13 +204,14 @@ function process_form(){
 //////////////////////////////////////////////////////////////////////////////////////////////
 			
 			global $dt;
-			$id = $_POST['Id'];
+			global $id;
+			if(isset($_POST['Id'])){ $id = $_POST['Id']; } else { $id = '';}
 
-function show_form($errors=''){
+function show_form($errors=[]){
 	
 	$dt = $_POST['doc'];
 
-	if($_POST['oculto2']){
+	if(isset($_POST['oculto2'])){
 		
 				$defaults = array ( 'ID' => $_POST['ID'],
 									'Nombre' => $_POST['Nombre'],
@@ -475,14 +453,18 @@ function show_form($errors=''){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	function master_index(){
-		
-				require '../Inclu/Master_Index_Admin.php';
-				
-				} 
+function master_index(){
+
+	global $RutaDir;
+	$RutaDir = "Admin";
+	require '../Inclu/Master_Index.php';
+			
+	} 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-	require '../Inclu/Admin_Inclu_02.php';
+	require '../Inclu/Inclu_Footer.php';
+
+					 /* Creado por Juan Manuel Barrós Pazos 2008/2022 */
 		
 ?>

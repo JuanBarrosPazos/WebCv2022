@@ -1,12 +1,9 @@
 <?php
 session_start();
  
-		require '../Conections/conection.php';
-
-	$db = mysqli_connect($db_host,$db_user,$db_pass,$db_name);
-	if (!$db){ die ("Es imposible conectar con la bbdd ".$db_name."<br/>".mysqli_connect_error());
-				}
-
+	require '../Conections/conection.php';
+	require '../Conections/conexion_bbdd.php';
+	
 ///////////////////////////////////////////////////////////////////////////////////////
 		
 	$sqlt =  "SELECT * FROM `admin` ORDER BY `ID` ASC LIMIT 1";
@@ -19,80 +16,84 @@ session_start();
 	$_SESSION['mmail'] = $rowt['Email'];
 	require '../Inclu/Admin_Inclu_01.php';
 
-	$sql =  "SELECT * FROM `admin` WHERE `Usuario` = '$_POST[Usuario]' AND `Password` = '$_POST[Password]'";
+	global $usuario;
+	if(isset($_POST['Usuario'])){ $usuario = $_POST['Usuario']; } else { $usuario = '';}
+	global $password;
+	if(isset($_POST['Password'])){ $password = $_POST['Password']; } else { $password = '';}
+	
+	$sql =  "SELECT * FROM `admin` WHERE `Usuario` = '$usuario' AND `Password` = '$password'";
  	
 	$q = mysqli_query($db, $sql);
 	$row = mysqli_fetch_assoc($q);
+	global $num;
+	$num = mysqli_num_rows($q);
 	
-	$_SESSION['ID'] = $row['ID'];
-	$_SESSION['Nivel'] = $row['Nivel'];
-	$_SESSION['Nombre'] = $row['Nombre'];
-	$_SESSION['Apellidos'] = $row['Apellidos'];
-	$_SESSION['Email'] = $row['Email'];
-	$_SESSION['Usuario'] = $row['Usuario'];
-	$_SESSION['Password'] = $row['Password'];
-	$_SESSION['Direccion'] = $row['Direccion'];
-	$_SESSION['Tlf1'] = $row['Tlf1'];
-	$_SESSION['Tlf2'] = $row['Tlf2'];
+	if($num > 0){
+		$_SESSION['ID'] = $row['ID'];
+		$_SESSION['Nivel'] = $row['Nivel'];
+		$_SESSION['Nombre'] = $row['Nombre'];
+		$_SESSION['Apellidos'] = $row['Apellidos'];
+		$_SESSION['Email'] = $row['Email'];
+		$_SESSION['Usuario'] = $row['Usuario'];
+		$_SESSION['Password'] = $row['Password'];
+		$_SESSION['Direccion'] = $row['Direccion'];
+		$_SESSION['Tlf1'] = $row['Tlf1'];
+		$_SESSION['Tlf2'] = $row['Tlf2'];
+	} else { }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-//require '../Inclu/Admin_1.php';
-		
-			if($_POST['oculto']){
+	if(isset($_POST['oculto'])){
 					
-					if($form_errors = validate_form()){
-										suma_denegado ();
-										show_form($form_errors);
-										global $denegado;
-										global $accion;
-										$accion ="ACCESO DENEGADO ADMIN WCV N: ".$denegado.".";
-										admin();
-								} else {suma_acces();
-										process_form();
-										ver_todo();
-										global $name;
-										$name = $_SESSION['Nombre'];
-										global $name2;
-										$name2 = $_SESSION['Apellidos'];
-										global $accion;
-										//$accion ="SESION ABIERTA WCV: ".$name." ".$name2.".";
-										$accion ="SESION ABIERTA WCV: ".$_SESSION['Nombre']." ".$_SESSION['Apellidos'].".";
-										admin();
-										$_SESSION['CloseN']=$_SESSION['Nombre'];
-										$_SESSION['CloseA']=$_SESSION['Apellidos'];
+		if($form_errors = validate_form()){
+						suma_denegado ();
+						show_form($form_errors);
+						global $denegado;
+						global $accion;
+						$accion ="ACCESO DENEGADO ADMIN WCV N: ".$denegado.".";
+				} else {suma_acces();
+						process_form();
+						ver_todo();
+						global $name;
+						$name = $_SESSION['Nombre'];
+						global $name2;
+						$name2 = $_SESSION['Apellidos'];
+						global $accion;
+						//$accion ="SESION ABIERTA WCV: ".$name." ".$name2.".";
+						$accion ="SESION ABIERTA WCV: ".$_SESSION['Nombre']." ".$_SESSION['Apellidos'].".";
+						$_SESSION['CloseN']=$_SESSION['Nombre'];
+						$_SESSION['CloseA']=$_SESSION['Apellidos'];
 										}
-					} elseif ($_POST['cerrar']){
-										global $name;
-										$name = $_SESSION['CloseN'];
-										global $name2;
-										$name2 = $_SESSION['CloseA'];
-										global $accion;
-										//$accion ="SESION CERRADA WCV: ".$name." ".$name2.".";
-										$accion ="SESION CERRADA WCV: ".$_SESSION['CloseN']." ".$_SESSION['CloseA'].".";
-										admin();
-										show_form();
-												unset($_SESSION['ID']);
-												unset($_SESSION['Nivel']);
-												unset($_SESSION['Nombre']);
-												unset($_SESSION['Apellidos']);
-												unset($_SESSION['Email']);
-												unset($_SESSION['Usuario']);
-												unset($_SESSION['Password']);
-												unset($_SESSION['Direccion']);
-												unset($_SESSION['Tlf1']);
-												unset($_SESSION['Tlf2']);
-										print("HA CERRADO SU SESION.<br/>");
+		} elseif (isset($_POST['cerrar'])){
+						global $name;
+						$name = $_SESSION['CloseN'];
+						global $name2;
+						$name2 = $_SESSION['CloseA'];
+						global $accion;
+						//$accion ="SESION CERRADA WCV: ".$name." ".$name2.".";
+						$accion ="SESION CERRADA WCV: ".$_SESSION['CloseN']." ".$_SESSION['CloseA'].".";
+						show_form();
+								unset($_SESSION['ID']);
+								unset($_SESSION['Nivel']);
+								unset($_SESSION['Nombre']);
+								unset($_SESSION['Apellidos']);
+								unset($_SESSION['Email']);
+								unset($_SESSION['Usuario']);
+								unset($_SESSION['Password']);
+								unset($_SESSION['Direccion']);
+								unset($_SESSION['Tlf1']);
+								unset($_SESSION['Tlf2']);
+						print("HA CERRADO SU SESION.<br/>");
 								}
-									else {	suma_visit();	
-											show_form();
-											global $visit;
-											global $accion;
-											$accion ="VISITA ADMIN WCV N: ".$visit.".";
-											admin();
-											unset($_SESSION['CloseN']);
-											unset($_SESSION['CloseA']);
-															}
+					else {	suma_visit();	
+							show_form();
+							global $visit;
+							global $accion;
+							$accion ="VISITA ADMIN WCV N: ".$visit.".";
+							unset($_SESSION['CloseN']);
+							unset($_SESSION['CloseA']);
+											}
 				
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -312,11 +313,11 @@ function validate_form(){
 	global $q;
 	global $row;
 	
-	if(trim($_POST['Usuario'] != $row['Usuario'])){
+	if(trim($_POST['Usuario'] != @$row['Usuario'])){
 		$errors [] = "Nombre o Password incorrecto.";
 		}
 	
-	elseif(trim($_POST['Password'] != $row['Password'])){
+	elseif(trim($_POST['Password'] != @$row['Password'])){
 		$errors [] = "Nombre o Password incorrecto.";
 		}
 
@@ -340,7 +341,7 @@ function process_form(){
 
 function show_form($errors=[]){
 	
-	if($_POST['oculto']){
+	if(isset($_POST['oculto'])){
 		$defaults = $_POST;
 		} else {
 				$defaults = array ('Usuario' => '',
@@ -422,7 +423,9 @@ function ver_todo(){
 		
 	global $db;
 	
-	$orden = $_POST['Orden'];
+	global $orden; 
+	if(isset($_POST['Orden'])){$orden = $_POST['Orden'];}
+	else{$orden = "`id` ASC";}
 		
 	$sqlb =  "SELECT * FROM `web_cv` ORDER BY `year` DESC ";
 	$qb = mysqli_query($db, $sqlb);
@@ -520,186 +523,17 @@ function ver_todo(){
 		
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	function master_index(){
-		
-				require '../Inclu/Master_Index_Admin.php';
-				
-				} 
-	
+function master_index(){
+
+	global $RutaDir;
+	$RutaDir = "Admin";
+	require '../Inclu/Master_Index.php';
+			
+	} 
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	require '../Inclu/Admin_Inclu_02.php';
-
-/////////////////
-
- function admin(){	 
-
-/**/
-
-	require_once('../geo_class/geoplugin.class.php');
-	$geoplugin = new geoPlugin();
-	$geoplugin->locate();
-
-	global $accion;
- 	
-	$text_body = " <!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">
-				<html>
-					<head>
-						<title>Untitled Document</title>
-						<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
-						<meta http-equiv='content-type' content='text/html' charset='utf-8' />
-						<meta http-equiv='Content-Language' content='es-es'>
-						<META NAME='Language' CONTENT='Spanish'>
-					</head>
-						<body bgcolor='#D7F0E7'>
-					<STYLE>
-						body {
-							font-family: 'Times New Roman', Times, serif;
-						}
-						body a {
-							text-decoration:none;
-						}
-						table a {
-							color: #666666;
-							text-decoration: none;
-							font-family: 'Times New Roman', Times, serif;
-						}
-						table a:hover {
-							color: #FF9900;
-							text-decoration: none;
-						}
-						tr {
-							margin: 0px;
-							padding: 0px;
-						}
-						td {
-							margin: 0px;
-							padding: 6px;
-						}
-						th {
-							padding: 6px;
-							margin: 0px;
-							text-align: center;
-							color: #666666;
-						}
-					</STYLE>
-	<table font-family='Times New Roman' width='90%' border='0' align='center' cellpadding='0' cellspacing='0'>
-				<tr>
-					<th colspan='3'>NOTIFICACIÓN ".$accion."</th>
-				</tr>
-				<tr>
-					<th colspan='3'>MENSAJE AUTOMÁTICO</th>
-				</tr>
-				 <tr>
-					<td align='right'>ASUNTO:</td>
-					<td width='12'>&nbsp;</td>
-					<td align='left'>
-							".$accion.".
-					</td>
-				</tr>
-				<tr>
-					<td align='right'>FECHA:</td>
-					<td>&nbsp;</td>
-					<td align='left'>".date('d-m-Y/H:i:s')."</td>
-				</tr>
-				<tr>
-					<td align='right'>URL:</td>
-					<td>&nbsp;</td>
-					<td align='left'>".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']."</td>
-				</tr>
-				<tr>
-					<td align='right'>SERVER NAME:</td>
-					<td>&nbsp;</td>
-					<td align='left'>".$_SERVER['SERVER_NAME']."</td>
-				</tr>
-				<tr>
-					<td align='right'>SERVER IP:</td>
-					<td>&nbsp;</td>
-					<td align='left'>".$_SERVER['SERVER_ADDR']."</td>
-				</tr>
-				<tr>
-					<td align='right'>SERVER ADMIN:</td>
-					<td>&nbsp;</td>
-					<td align='left'>".$_SERVER['SERVER_ADMIN']."</td>
-				</tr>
-					<tr>
-					<td align='right'>IP ACCESS:</td>
-					<td>&nbsp;</td>
-					<td align='left'>".$_SERVER['REMOTE_ADDR']."</td>
-				</tr>
-				<tr>
-					<td align='right'>GEOLOCATION FOR:</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->ip}</td>
-				</tr>
-				<tr>
-					<td align='right'>LATITUD:</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->latitude}</td>
-				</tr>
-				<tr>
-					<td align='right'>LONGITUD:</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->longitude}</td>
-				</tr>
-				<tr>
-					<td align='right'>COUNTRY NAME</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->countryName}</td>
-				</tr>
-				<tr>
-					<td align='right'>COUNTY CODE:</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->countryCode}</td>
-				</tr>
-				<tr>
-					<td align='right'>REGION:</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->region}</td>
-				</tr>
-				<tr>
-					<td align='right'>CITY:</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->city}</td>
-				</tr>
-				<tr>
-					<td align='right'>AREA CODE:</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->areaCode}</td>
-				</tr>
-				<tr>
-					<td align='right'>DMA CODE:</td>
-					<td>&nbsp;</td>
-					<td align='left'>{$geoplugin->dmaCode}</td>
-				</tr>
-					</table>
-				</body>
-			</html>";
-			
-	$headers = array ('From' => "juanbarrospazos@hotmail.es",
-					  'Subject' => "NOTIFICACION ".$accion.".");
-				$destinatario= $_SESSION['mmail'];
-				$titulo= "NOTIFICACION ".$accion.".";
-				$responder= $_SESSION['mmail'];
-				$remite= $_SESSION['mmail'];
-				$remitente= "MENSAJE AUTO ".$accion.".";
-				$separador = "_separador".md5 (uniqid (rand()));
-				$cabecera = "Date: ".date('l j F Y, G:i')."\n";
-				$cabecera .="MIME-Version: 1.0\n";
-				$cabecera .="From: ".$remitente."<".$remite.">\n";
-				$cabecera .="Return-path: ". $remite."\n";
-				$cabecera .= "Reply-To: ".$remite."\n";
-				$cabecera .="X-Mailer: PHP/". phpversion()."\n";
-				$cabecera .= "Content-Type: multipart/mixed;"."\n";
-				$cabecera .= " boundary=$separador"."\r\n\r\n";	/**/
-				$texto_html ="\n"."--$separador"."\n";			/**/
-				$texto_html .="Content-Type:text/html; charset=\'utf-8\'"."\n";
-				$texto_html .="Content-Transfer-Encoding: 7bit"."\r\n\r\n";
-				$texto_html .= $text_body;
-				$mensaje= $texto_html;
-			if( mail($destinatario, $titulo, $mensaje, $cabecera)){print("");
-							}else{print("");}
-	}
+	require '../Inclu/Inclu_Footer.php';
 
 ////////////////////////////
 
