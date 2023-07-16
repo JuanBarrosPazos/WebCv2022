@@ -1,1 +1,0 @@
-http://juanbarrospazos.blogspot.com.es/
